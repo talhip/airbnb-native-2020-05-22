@@ -16,10 +16,11 @@ export default function ProfileScreen({ userToken }) {
       const { status } = await Location.requestPermissionsAsync();
       if (status === "granted") {
         const location = await Location.getCurrentPositionAsync({});
-        const newCoords = { ...coords };
-        newCoords.latitude = location.coords.latitude;
-        newCoords.longitude = location.coords.longitude;
-        setCoords(newCoords);
+        setCoords({
+          ...coords,
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
         setIsLoadingLocation(false);
       } else {
         setErrMsg(

@@ -10,6 +10,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import * as ImagePicker from "expo-image-picker";
 
 export default function SettingsScreen({ userId, userToken, setToken }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -35,6 +36,15 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
         console.log(error.message);
       }
     };
+    const askPermission = async () => {
+      // Demander la permission d'accéder à la galerie photos
+      let { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+
+      if (status !== "granted") {
+        alert("You need to allow this");
+      }
+    };
+    askPermission();
     fetchData();
   }, [changeData]);
 
@@ -89,7 +99,6 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
                       },
                     }
                   );
-                  console.log(response.data);
                   setUsername("");
                   setDescription("");
                   setChangeData(!changeData);
