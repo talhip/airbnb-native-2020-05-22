@@ -8,6 +8,7 @@ import {
   View,
   TouchableOpacity,
   SafeAreaView,
+  ImageBackground,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import * as ImagePicker from "expo-image-picker";
@@ -65,7 +66,7 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
                 }
               }}
             >
-              {data.photo[0].url ? (
+              {data.photo[0].url && !image ? (
                 <Image
                   style={styles.imageFlat}
                   source={{
@@ -73,51 +74,78 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
                   }}
                 />
               ) : (
-                <Text>Vous n'avez pas de photo pour le moment !</Text>
+                <View>
+                  <TouchableOpacity
+                    onPress={async () => {
+                      setIsLoading(true);
+                      const uri = image;
+                      const uriParts = uri.split(".");
+                      const fileType = uriParts[uriParts.length - 1];
+                      const formData = new FormData();
+                      formData.append("photo", {
+                        uri,
+                        name: `photo.${fileType}`,
+                        type: `image/${fileType}`,
+                      });
+                      console.log(formData);
+
+                      try {
+                        const response = await axios.put(
+                          `https://express-airbnb-api.herokuapp.com/user/upload_picture/${userId}`,
+                          formData,
+                          {
+                            headers: {
+                              Authorization: "Bearer " + userToken,
+                              Accept: "application/json",
+                              "Content-Type": "multipart/form-data",
+                            },
+                          }
+                        );
+                        setImage("");
+                        setChangeImage(!changeImage);
+                      } catch (error) {
+                        console.log(error);
+                      }
+                    }}
+                  >
+                    <ImageBackground
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: 220,
+                      }}
+                      source={{
+                        uri: `${image}`,
+                      }}
+                    >
+                      <Text style={styles.buttonText}>Valider l'image</Text>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                </View>
               )}
-              {image ? (
+
+              {image ? null : (
                 <TouchableOpacity
                   style={styles.button}
                   onPress={async () => {
-                    const uri = image;
-                    const uriParts = uri.split(".");
-                    const fileType = uriParts[uriParts.length - 1];
-                    const formData = new FormData();
-                    formData.append("photo", {
-                      uri,
-                      name: `photo.${fileType}`,
-                      type: `image/${fileType}`,
-                    });
-                    console.log(formData);
-
                     try {
-                      const response = await axios.put(
-                        `https://express-airbnb-api.herokuapp.com/user/upload_picture/${userId}`,
-                        formData,
-                        {
-                          headers: {
-                            Authorization: "Bearer " + userToken,
-                            Accept: "application/json",
-                            "Content-Type": "multipart/form-data",
-                          },
-                        }
-                      );
-                      console.log(response.data);
-                      setImage("");
-                      setChangeImage(!changeImage);
+                      let result = await ImagePicker.launchImageLibraryAsync({
+                        allowsEditing: true,
+                      });
+                      setImage(result.uri);
                     } catch (error) {
                       console.log(error);
                     }
                   }}
                 >
-                  <Text style={styles.buttonText}>Charger l'image</Text>
+                  <Text style={styles.buttonText}>Changer l'image</Text>
                 </TouchableOpacity>
-              ) : null}
+              )}
             </TouchableOpacity>
 
             <TextInput
               style={styles.input}
-              placeholderTextColor="black"
+              placeholderTextColor="grey"
               placeholder={data.username}
               onChangeText={(text) => {
                 setUsername(text);
@@ -126,7 +154,7 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
             />
             <TextInput
               style={styles.textArea}
-              placeholderTextColor="black"
+              placeholderTextColor="grey"
               multiline={true}
               numberOfLines={5}
               placeholder={data.description}
