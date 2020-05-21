@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRoute } from "@react-navigation/core";
 import { StyleSheet, Image, Text, View } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
 
@@ -23,6 +24,17 @@ export default function RoomScreen({ route }) {
     fetchData();
   }, []);
 
+  const renderStars = () => {
+    const tab = [];
+    for (let i = 0; i < 5; i++) {
+      if (i < data.ratingValue) {
+        tab.push(<FontAwesome key={i} name="star" size={24} color="yellow" />);
+      } else {
+        tab.push(<FontAwesome key={i} name="star" size={24} color="grey" />);
+      }
+    }
+    return tab;
+  };
   return (
     <View>
       {isLoading ? null : (
@@ -39,6 +51,7 @@ export default function RoomScreen({ route }) {
             <Text>{data.reviews} avis</Text>
             <Text>{data.ratingValue} / 5</Text>
             <Text>{data.description}</Text>
+            <View>{renderStars()}</View>
             <Image
               style={styles.imageOwner}
               source={{

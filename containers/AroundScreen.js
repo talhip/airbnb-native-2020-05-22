@@ -37,6 +37,7 @@ export default function ProfileScreen({ userToken }) {
           `https://airbnb-api.herokuapp.com/api/room/around?latitude=${coords.latitude}&longitude=${coords.longitude}`
         );
         setData(response.data);
+        setIsLoadingData(!isLoadingLocation);
         setIsLoadingData(false);
       };
       fetchData();
