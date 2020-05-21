@@ -7,8 +7,6 @@ import {
   View,
   FlatList,
   Image,
-  SafeAreaView,
-  ScrollView,
   TouchableOpacity,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";

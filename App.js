@@ -195,7 +195,13 @@ export default function App() {
                           },
                         }}
                       >
-                        {() => <SettingsScreen setToken={setToken} />}
+                        {() => (
+                          <SettingsScreen
+                            userId={userId}
+                            userToken={userToken}
+                            setToken={setToken}
+                          />
+                        )}
                       </Stack.Screen>
                     </Stack.Navigator>
                   )}
