@@ -17,7 +17,9 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
   const [data, setData] = useState([]);
   const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
   const [changeData, setChangeData] = useState(false);
+  const [changeImage, setChangeImage] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,33 +38,83 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
         console.log(error.message);
       }
     };
-    const askPermission = async () => {
-      // Demander la permission d'accéder à la galerie photos
+    const uploadImage = async () => {
       let { status } = await ImagePicker.requestCameraRollPermissionsAsync();
-
       if (status !== "granted") {
-        alert("You need to allow this");
+        alert("Vous devez valider cette autorisation !");
       }
     };
-    askPermission();
+    uploadImage();
     fetchData();
-  }, [changeData]);
+  }, [changeData, changeImage]);
 
   return (
     <View>
       {isLoading ? null : (
         <ScrollView>
           <View>
-            <Text>userId : {userId}</Text>
-            <Text>userToken : {userToken}</Text>
-            <Text>username : {data.username}</Text>
-            <Text>description : {data.description}</Text>
-            <Image
-              style={styles.imageFlat}
-              source={{
-                uri: `${data.photo[0].url}`,
+            <TouchableOpacity
+              onPress={async () => {
+                try {
+                  let result = await ImagePicker.launchImageLibraryAsync({
+                    allowsEditing: true,
+                  });
+                  setImage(result.uri);
+                } catch (error) {
+                  console.log(error);
+                }
               }}
-            />
+            >
+              {data.photo[0].url ? (
+                <Image
+                  style={styles.imageFlat}
+                  source={{
+                    uri: `${data.photo[0].url}`,
+                  }}
+                />
+              ) : (
+                <Text>Vous n'avez pas de photo pour le moment !</Text>
+              )}
+              {image ? (
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={async () => {
+                    const uri = image;
+                    const uriParts = uri.split(".");
+                    const fileType = uriParts[uriParts.length - 1];
+                    const formData = new FormData();
+                    formData.append("photo", {
+                      uri,
+                      name: `photo.${fileType}`,
+                      type: `image/${fileType}`,
+                    });
+                    console.log(formData);
+
+                    try {
+                      const response = await axios.put(
+                        `https://express-airbnb-api.herokuapp.com/user/upload_picture/${userId}`,
+                        formData,
+                        {
+                          headers: {
+                            Authorization: "Bearer " + userToken,
+                            Accept: "application/json",
+                            "Content-Type": "multipart/form-data",
+                          },
+                        }
+                      );
+                      console.log(response.data);
+                      setImage("");
+                      setChangeImage(!changeImage);
+                    } catch (error) {
+                      console.log(error);
+                    }
+                  }}
+                >
+                  <Text style={styles.buttonText}>Charger l'image</Text>
+                </TouchableOpacity>
+              ) : null}
+            </TouchableOpacity>
+
             <TextInput
               style={styles.input}
               placeholderTextColor="black"

@@ -5,23 +5,20 @@ import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
 
 export default function ProfileScreen({ userToken }) {
-  const [coords, setCoords] = useState({});
+  const [coords, setCoords] = useState(null);
   const [data, setData] = useState([]);
   const [errMsg, setErrMsg] = useState(null);
   const [isLoadingData, setIsLoadingData] = useState(true);
-  const [isLoadingLocation, setIsLoadingLocation] = useState(true);
 
   useEffect(() => {
     const askPermission = async () => {
       const { status } = await Location.requestPermissionsAsync();
       if (status === "granted") {
         const location = await Location.getCurrentPositionAsync({});
-        setCoords({
-          ...coords,
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        });
-        setIsLoadingLocation(false);
+        const newCoords = { ...coords };
+        newCoords.latitude = location.coords.latitude;
+        newCoords.longitude = location.coords.longitude;
+        setCoords(newCoords);
       } else {
         setErrMsg(
           "Il faut accepter la permission d'accès à la localisation pour utiliser l'application"
@@ -39,15 +36,15 @@ export default function ProfileScreen({ userToken }) {
       setData(response.data);
       setIsLoadingData(false);
     };
-    fetchData();
+    if (coords) {
+      fetchData();
+    }
   }, [coords]);
 
   return (
     <View>
       {!isLoadingData ? (
         <View>
-          <Text>Latitude : {coords.latitude}</Text>
-          <Text>Longitude : {coords.longitude}</Text>
           <MapView
             showsUserLocation={true}
             initialRegion={{
