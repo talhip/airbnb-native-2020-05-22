@@ -31,22 +31,19 @@ export default function ProfileScreen({ userToken }) {
   }, []);
 
   useEffect(() => {
-    if (!isLoadingLocation) {
-      const fetchData = async () => {
-        const response = await axios.get(
-          `https://airbnb-api.herokuapp.com/api/room/around?latitude=${coords.latitude}&longitude=${coords.longitude}`
-        );
-        setData(response.data);
-        setIsLoadingData(!isLoadingLocation);
-        setIsLoadingData(false);
-      };
-      fetchData();
-    }
+    const fetchData = async () => {
+      const response = await axios.get(
+        `https://airbnb-api.herokuapp.com/api/room/around?latitude=${coords.latitude}&longitude=${coords.longitude}`
+      );
+      setData(response.data);
+      setIsLoadingData(false);
+    };
+    fetchData();
   }, [coords]);
 
   return (
     <View>
-      {!isLoadingLocation && !isLoadingData ? (
+      {!isLoadingData ? (
         <View>
           <Text>Latitude : {coords.latitude}</Text>
           <Text>Longitude : {coords.longitude}</Text>

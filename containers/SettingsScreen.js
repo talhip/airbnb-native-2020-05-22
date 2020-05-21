@@ -16,6 +16,7 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
   const [data, setData] = useState([]);
   const [username, setUsername] = useState("");
   const [description, setDescription] = useState("");
+  const [changeData, setChangeData] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +36,7 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
       }
     };
     fetchData();
-  }, []);
+  }, [changeData]);
 
   return (
     <View>
@@ -91,6 +92,7 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
                   console.log(response.data);
                   setUsername("");
                   setDescription("");
+                  setChangeData(!changeData);
                 } else {
                   alert("Vous devez remplir au moins un champ !");
                 }
