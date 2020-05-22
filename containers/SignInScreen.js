@@ -23,6 +23,7 @@ export default function SignInScreen({ setToken, setId }) {
       <View style={{ backgroundColor: "#F2485B" }}>
         <FontAwesome name="home" size={164} color="white" style={styles.icon} />
         <TextInput
+          autoCapitalize="none"
           style={styles.input}
           placeholderTextColor="white"
           placeholder="monmail@gmail.com"

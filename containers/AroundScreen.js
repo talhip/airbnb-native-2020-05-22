@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { StyleSheet, Image, Text, View } from "react-native";
+import { StyleSheet, Image, Text, View, ActivityIndicator } from "react-native";
 import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
 
@@ -70,7 +70,9 @@ export default function ProfileScreen({ userToken }) {
             })}
           </MapView>
         </View>
-      ) : null}
+      ) : (
+        <ActivityIndicator size="large" color="#F2485B" />
+      )}
     </View>
   );
 }

@@ -7,6 +7,7 @@ import {
   Image,
   View,
   TouchableOpacity,
+  ActivityIndicator,
   SafeAreaView,
   ImageBackground,
 } from "react-native";
@@ -51,7 +52,9 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
 
   return (
     <View>
-      {isLoading ? null : (
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#F2485B" />
+      ) : (
         <ScrollView>
           <View>
             <TouchableOpacity
@@ -144,8 +147,9 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
             </TouchableOpacity>
 
             <TextInput
+              autoCapitalize="none"
               style={styles.input}
-              placeholderTextColor="grey"
+              placeholderTextColor="#BBBBBB"
               placeholder={data.username}
               onChangeText={(text) => {
                 setUsername(text);
@@ -154,7 +158,7 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
             />
             <TextInput
               style={styles.textArea}
-              placeholderTextColor="grey"
+              placeholderTextColor="#BBBBBB"
               multiline={true}
               numberOfLines={5}
               placeholder={data.description}
@@ -167,6 +171,7 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
               style={styles.button}
               onPress={async () => {
                 if (username || description) {
+                  setIsLoading(true);
                   const response = await axios.put(
                     `https://express-airbnb-api.herokuapp.com/user/update/${userId}`,
                     {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRoute } from "@react-navigation/core";
-import { StyleSheet, Image, Text, View } from "react-native";
+import { StyleSheet, Image, Text, View, ActivityIndicator } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { ScrollView } from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
@@ -37,7 +37,9 @@ export default function RoomScreen({ route }) {
   };
   return (
     <View>
-      {isLoading ? null : (
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#F2485B" />
+      ) : (
         <ScrollView>
           <View>
             <Text>{data.user.account.username.photos}</Text>
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
   },
   imageOwner: {
     borderRadius: 50,
-    height: 70,
-    width: 70,
+    height: 60,
+    width: 60,
   },
 });

@@ -28,6 +28,7 @@ export default function SignUpScreen({ setToken, setId }) {
         <View style={{ backgroundColor: "#F2485B" }}>
           <Text style={styles.h1}>Rejoignez-nous !</Text>
           <TextInput
+            autoCapitalize="none"
             style={styles.input}
             placeholderTextColor="white"
             placeholder="email"
@@ -37,6 +38,7 @@ export default function SignUpScreen({ setToken, setId }) {
             value={email}
           />
           <TextInput
+            autoCapitalize="none"
             style={styles.input}
             placeholderTextColor="white"
             placeholder="pseudo"
@@ -46,6 +48,7 @@ export default function SignUpScreen({ setToken, setId }) {
             value={username}
           />
           <TextInput
+            autoCapitalize="none"
             style={styles.input}
             placeholderTextColor="white"
             placeholder="prénom"

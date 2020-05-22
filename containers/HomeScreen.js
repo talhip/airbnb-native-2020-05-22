@@ -7,6 +7,7 @@ import {
   View,
   FlatList,
   Image,
+  ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
@@ -32,7 +33,9 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View>
-      {isLoading ? null : (
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#F2485B" />
+      ) : (
         <FlatList
           data={data}
           renderItem={({ item }) => {
@@ -41,11 +44,23 @@ export default function HomeScreen({ navigation }) {
               for (let i = 0; i < 5; i++) {
                 if (i < item.ratingValue) {
                   tab.push(
-                    <FontAwesome key={i} name="star" size={24} color="yellow" />
+                    <FontAwesome
+                      key={i}
+                      name="star"
+                      size={24}
+                      color="#F7B100"
+                      style={{ marginRight: 5 }}
+                    />
                   );
                 } else {
                   tab.push(
-                    <FontAwesome key={i} name="star" size={24} color="grey" />
+                    <FontAwesome
+                      key={i}
+                      name="star"
+                      size={24}
+                      color="#BBBBBB"
+                      style={{ marginRight: 5 }}
+                    />
                   );
                 }
               }
@@ -53,30 +68,58 @@ export default function HomeScreen({ navigation }) {
             };
             return (
               <TouchableOpacity
+                style={{ backgroundColor: "white" }}
                 onPress={() => {
                   navigation.navigate("Room", { id: item._id });
                 }}
               >
-                <View>
+                <View style={styles.place}>
                   <Text>{item.user.account.username.photos}</Text>
-                  <Image
-                    style={styles.imageFlat}
-                    source={{
-                      uri: `${item.photos[0]}`,
-                    }}
-                  />
-                  <Text>{item.price} €</Text>
-                  <Text>{item.reviews} avis</Text>
-                  <Text>{item.ratingValue} / 5</Text>
-                  <Text>{item.description}</Text>
-                  <View>{renderStars()}</View>
-                  <Image
-                    style={styles.imageOwner}
-                    source={{
-                      uri: `${item.user.account.photos[0]}`,
-                    }}
-                  />
-                  <Text>------------------------------------------------</Text>
+                  <View style={{ position: "relative" }}>
+                    <Image
+                      style={styles.imageFlat}
+                      source={{
+                        uri: `${item.photos[0]}`,
+                      }}
+                    />
+                    <View style={styles.price}>
+                      <Text style={{ color: "white", fontSize: 22 }}>
+                        {item.price} €
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={{ flexDirection: "row", marginVertical: 15 }}>
+                    <View style={{ flex: 1, justifyContent: "center" }}>
+                      <Text
+                        numberOfLines={1}
+                        style={{ fontSize: 18, width: 250, paddingBottom: 10 }}
+                      >
+                        {item.description}
+                      </Text>
+                      <View style={styles.stars}>
+                        {renderStars()}
+                        <Text
+                          style={{
+                            color: "#BBBBBB",
+                            fontSize: 16,
+                            paddingLeft: 10,
+                          }}
+                        >
+                          {item.reviews} avis
+                        </Text>
+                      </View>
+                    </View>
+                    <View>
+                      <Image
+                        style={styles.imageOwner}
+                        source={{
+                          uri: `${item.user.account.photos[0]}`,
+                        }}
+                        resizeMode="contain"
+                      />
+                    </View>
+                  </View>
                 </View>
               </TouchableOpacity>
             );
@@ -89,12 +132,32 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  place: {
+    backgroundColor: "white",
+    marginRight: 20,
+    marginLeft: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#BBBBBB",
+  },
   imageFlat: {
+    width: "100%",
     height: 220,
+  },
+  price: {
+    height: 40,
+    width: 80,
+    backgroundColor: "black",
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
+    bottom: 10,
+  },
+  stars: {
+    flexDirection: "row",
   },
   imageOwner: {
     borderRadius: 50,
-    height: 70,
-    width: 70,
+    height: 60,
+    width: 60,
   },
 });
