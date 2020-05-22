@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { StyleSheet, Image, Text, View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator } from "react-native";
 import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
 

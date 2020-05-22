@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigation } from "@react-navigation/core";
 import {
   StyleSheet,
   Text,
@@ -9,6 +8,7 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -32,7 +32,7 @@ export default function HomeScreen({ navigation }) {
   }, []);
 
   return (
-    <View>
+    <View style={{ backgroundColor: "white" }}>
       {isLoading ? (
         <ActivityIndicator size="large" color="#F2485B" />
       ) : (
@@ -73,6 +73,7 @@ export default function HomeScreen({ navigation }) {
                   navigation.navigate("Room", { id: item._id });
                 }}
               >
+                <StatusBar barStyle="light-content" backgroundColor="#F2485B" />
                 <View style={styles.place}>
                   <Text>{item.user.account.username.photos}</Text>
                   <View style={{ position: "relative" }}>
@@ -95,7 +96,7 @@ export default function HomeScreen({ navigation }) {
                         numberOfLines={1}
                         style={{ fontSize: 18, width: 250, paddingBottom: 10 }}
                       >
-                        {item.description}
+                        {item.title}
                       </Text>
                       <View style={styles.stars}>
                         {renderStars()}

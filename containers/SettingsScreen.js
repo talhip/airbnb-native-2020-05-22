@@ -8,7 +8,6 @@ import {
   View,
   TouchableOpacity,
   ActivityIndicator,
-  SafeAreaView,
   ImageBackground,
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -18,6 +17,7 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
   const [changeData, setChangeData] = useState(false);
@@ -51,12 +51,12 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
   }, [changeData, changeImage]);
 
   return (
-    <View>
+    <View style={{ backgroundColor: "white" }}>
       {isLoading ? (
         <ActivityIndicator size="large" color="#F2485B" />
       ) : (
         <ScrollView>
-          <View>
+          <View style={{ backgroundColor: "white", paddingBottom: 140 }}>
             <TouchableOpacity
               onPress={async () => {
                 try {
@@ -112,21 +112,30 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
                     }}
                   >
                     <ImageBackground
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: 220,
-                      }}
+                      style={[styles.imageFlat, { justifyContent: "center" }]}
                       source={{
                         uri: `${image}`,
                       }}
                     >
-                      <Text style={styles.buttonText}>Valider l'image</Text>
+                      <Text
+                        style={[
+                          styles.buttonText,
+                          {
+                            alignSelf: "center",
+                            fontSize: 22,
+                            width: 170,
+                            height: 40,
+                            backgroundColor: "#f2b0b7",
+                            color: "white",
+                          },
+                        ]}
+                      >
+                        Valider l'image
+                      </Text>
                     </ImageBackground>
                   </TouchableOpacity>
                 </View>
               )}
-
               {image ? null : (
                 <TouchableOpacity
                   style={styles.button}
@@ -140,9 +149,7 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
                       console.log(error);
                     }
                   }}
-                >
-                  <Text style={styles.buttonText}>Changer l'image</Text>
-                </TouchableOpacity>
+                ></TouchableOpacity>
               )}
             </TouchableOpacity>
 
@@ -155,6 +162,16 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
                 setUsername(text);
               }}
               value={username}
+            />
+            <TextInput
+              autoCapitalize="none"
+              style={styles.input}
+              placeholderTextColor="#BBBBBB"
+              placeholder={data.email}
+              onChangeText={(text) => {
+                setEmail(text);
+              }}
+              value={email}
             />
             <TextInput
               style={styles.textArea}
@@ -170,12 +187,13 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
             <TouchableOpacity
               style={styles.button}
               onPress={async () => {
-                if (username || description) {
+                if (username || email || description) {
                   setIsLoading(true);
                   const response = await axios.put(
                     `https://express-airbnb-api.herokuapp.com/user/update/${userId}`,
                     {
                       username: username,
+                      email: email,
                       description: description,
                     },
                     {
@@ -185,6 +203,7 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
                     }
                   );
                   setUsername("");
+                  setEmail("");
                   setDescription("");
                   setChangeData(!changeData);
                 } else {
@@ -192,7 +211,20 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
                 }
               }}
             >
-              <Text style={styles.buttonText}>Mettre à jour</Text>
+              <Text
+                style={[
+                  styles.buttonText,
+                  {
+                    fontSize: 22,
+                    width: 170,
+                    height: 40,
+                    backgroundColor: "#f2b0b7",
+                    color: "white",
+                  },
+                ]}
+              >
+                Mettre à jour
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
@@ -211,7 +243,11 @@ export default function SettingsScreen({ userId, userToken, setToken }) {
 
 const styles = StyleSheet.create({
   imageFlat: {
-    height: 220,
+    marginTop: 40,
+    borderRadius: 5,
+    alignSelf: "center",
+    width: 180,
+    height: 180,
   },
   input: {
     paddingLeft: 5,
@@ -241,17 +277,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   button: {
-    paddingTop: 60,
+    paddingTop: 40,
     alignItems: "center",
   },
   buttonText: {
     borderRadius: 50,
-    fontSize: 28,
+    fontSize: 24,
     textAlignVertical: "center",
     textAlign: "center",
-    width: 230,
-    height: 60,
-    color: "#F2485B",
-    backgroundColor: "white",
+    width: 210,
+    height: 50,
+    color: "white",
+    backgroundColor: "#F2485B",
   },
 });
