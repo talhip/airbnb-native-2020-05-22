@@ -8,6 +8,7 @@ export default function ProfileScreen({ userToken }) {
   const [coords, setCoords] = useState(null);
   const [data, setData] = useState([]);
   const [errMsg, setErrMsg] = useState(null);
+  const [isLoadingLocation, setIsLoadingLocation] = useState(true);
   const [isLoadingData, setIsLoadingData] = useState(true);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ export default function ProfileScreen({ userToken }) {
         newCoords.latitude = location.coords.latitude;
         newCoords.longitude = location.coords.longitude;
         setCoords(newCoords);
+        setIsLoadingLocation(false);
       } else {
         setErrMsg(
           "Il faut accepter la permission d'accès à la localisation pour utiliser l'application"
@@ -39,11 +41,11 @@ export default function ProfileScreen({ userToken }) {
     if (coords) {
       fetchData();
     }
-  }, [coords]);
+  }, [coords, isLoadingLocation]);
 
   return (
     <View>
-      {!isLoadingData ? (
+      {!isLoadingData && !isLoadingLocation ? (
         <View>
           <MapView
             showsUserLocation={true}
